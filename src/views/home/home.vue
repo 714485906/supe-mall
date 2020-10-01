@@ -1,17 +1,20 @@
 <template>
 <div id="home">
+
   <nav-bar class="VavTitle">
     <div slot="center">购物街</div>
   </nav-bar>
-  <swiper></swiper>
-  <h2>首页</h2>
+
+  <swiper-home :siderimg="banner"></swiper-home>
+
+
 </div>
 </template>
 
 <script>
 import NavBar from '@/components/common/navbar/NavBar'
 import {gethomeMultiata} from '@/network/home'
-import Swiper from '@/components/common/Swiper/swiper'
+import swiperHome from '@/views/home/childComps/swiperHome'
 export default {
 name: "home",
   data(){
@@ -22,7 +25,8 @@ name: "home",
   },
   components:{
     NavBar,
-    Swiper
+    swiperHome
+
   },
   created() {
 
