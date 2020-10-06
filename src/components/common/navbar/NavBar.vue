@@ -24,6 +24,8 @@ name: "NavBar"
   width: 100%;
   height: 44px;
   text-align: center;
+  position: fixed;
+  z-index: 1;
 }
 .nav-bar .left{
   width: 60px;

@@ -45,6 +45,7 @@ name: "tabbar",
   bottom: 0px;
   height: 50px;
   box-shadow:  1px  -3px 2px rgba(100,100,100,.1);
+  z-index: 2;
 
 }
 
