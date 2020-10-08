@@ -24,7 +24,6 @@ name: "goodsList",
 
 <style scoped>
 .goods-List-item{
-  width: 96%;
   display: flex;
   flex-wrap: wrap;
   justify-content:space-around;

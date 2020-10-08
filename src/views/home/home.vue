@@ -2,18 +2,24 @@
 <div id="home">
   <!--首页头部-->
   <nav-bar class="VavTitle"><div slot="center">购物街</div></nav-bar>
-  <!--轮播图-->
-  <swiper-home :siderimg="banner" class="siderBox"></swiper-home>
-  <!--购物推荐-->
-  <home-recommend :HomeRecommend="recommend"></home-recommend>
-  <!--本周推荐-->
-  <homekeywords :Homekeywords="keywords"> </homekeywords>
-  <!--分类-->
-  <classify-tab :titleList="['流行','新款','精选']"
-                class="isyBox"
-                @tabck="tabck"></classify-tab>
 
-  <goods-list :goods="goods[tabType].list"></goods-list>
+
+  <scroll id="aaaa" ref="scroll" :isProbeType="3" :ispullupload="true" @scroll="scrollCoent" @TopPullingUp="moreUp">
+    <!--轮播图-->
+    <swiper-home :siderimg="banner" class="siderBox"></swiper-home>
+    <!--购物推荐-->
+    <home-recommend :HomeRecommend="recommend"></home-recommend>
+    <!--本周推荐-->
+    <homekeywords :Homekeywords="keywords"> </homekeywords>
+    <!--分类-->
+    <classify-tab :titleList="['流行','新款','精选']"
+                  class="isyBox"
+                  @tabck="tabck"></classify-tab>
+
+    <goods-list :goods="goods[tabType].list"></goods-list>
+  </scroll>
+
+  <top-bscroll @click.native="topBtn" v-show="Isshow"></top-bscroll>
 
 
 
@@ -23,6 +29,8 @@
 
 <script>
 import NavBar from '@/components/common/navbar/NavBar'
+import scroll from '@/components/common/scroll/scroll'
+import topBscroll from '@/components/content/topBoscroll/topbscroll'
 import classifyTab from '@/components/content/classifyTab/classifyTab'
 import goodsList from '@/components/content/goods/goodsList'
 import {gethomeMultiata,gethomeData} from '@/network/home'
@@ -42,16 +50,20 @@ name: "home",
         'new': {page: 0, list: []},
         'sell': {page: 0, list: []}
       },
-        tabType:'pop'
+      tabType:'pop',
+      Isshow:false
     }
+
   },
   components:{
     NavBar,
     classifyTab,
     goodsList,
+    topBscroll,
     swiperHome,
     HomeRecommend,
-    Homekeywords
+    Homekeywords,
+    scroll
 
   },
   created() {
@@ -80,6 +92,17 @@ name: "home",
               break
       }
     },
+
+    topBtn(){
+        this.$refs.scroll.scroll.scrollTo(0,0,500)
+    },
+    scrollCoent(postion){
+     // console.log(postion);
+      this.Isshow = (-postion.y) > 800
+    },
+    moreUp(){
+      this.gethomeData(this.tabType)
+    },
     /*
     * 数据请求
     * */
@@ -92,9 +115,17 @@ name: "home",
     },
 
     gethomeData(type){
-      const page = this.goods[type].page+1
+      const page = this.goods[type].page + 1
+      console.log(page)
       gethomeData(type,page).then( res =>{
-        this.goods[type].list.push(...res.data.list)
+        this.goods[type].list.push(...res.data.list);
+        this.goods[type].page += 1
+
+        //可以进行下载上拉刷新
+        this.$refs.scroll.scroll.finishPullUp();
+        //加载完之后 重新计算一下高度
+        this.$refs.scroll.scroll.refresh()
+
       })
     }
 
@@ -104,6 +135,10 @@ name: "home",
 </script>
 
 <style scoped>
+
+#home{
+  height: 100vh;
+}
 .VavTitle{
   width: 100%;
   background: #ff5777;
@@ -115,10 +150,20 @@ name: "home",
 .siderBox{
  padding-top: 44px;
 }
+
 .isyBox{
   position: sticky;
   top: 44px;
   z-index: 1;
   background: #fff;
+}
+#aaaa{
+  position: absolute;
+  top: 0px;
+  bottom: 65px;
+  left: 2%;
+  right: 2%;
+  overflow: hidden;
+
 }
 </style>
